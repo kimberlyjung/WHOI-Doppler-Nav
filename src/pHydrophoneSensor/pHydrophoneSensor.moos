@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pHydrophoneSensor config block
+
+ProcessConfig = pHydrophoneSensor
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

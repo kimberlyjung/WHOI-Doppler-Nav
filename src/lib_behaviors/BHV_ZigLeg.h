@@ -27,7 +27,8 @@ public:
   IvPFunction* onRunState();
 
 protected: // Local Utility functions
-  IvPFunction* buildIvPFxnZAIC();
+  IvPFunction* buildIvPFxnZAICRight();
+  IvPFunction* buildIvPFxnZAICLeft();
   double       calcTowardAngle(double c, double f_0, double f_m, double v_l, double v_f);
   double       calcAwayAngle(double c, double f_0, double f_m, double v_l, double v_f);
   int          averageFrequency();
@@ -49,6 +50,11 @@ protected: // State variables
   double m_toward_angle_1, m_away_angle_1;
   double m_toward_angle_2, m_away_angle_2;
   double m_post_time_1, m_post_time_2;
+  double m_acceptable_angle_difference;
+  unsigned int m_freq_counter;
+  std::vector<int> m_vec_freqs;
+  unsigned int m_sample_size;  
+  bool m_bool_right;
 };
 
 #define IVP_EXPORT_FUNCTION

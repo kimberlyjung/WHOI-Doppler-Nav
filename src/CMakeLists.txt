@@ -15,7 +15,7 @@ INCLUDE_DIRECTORIES(${LOCAL_LIBRARY_DIRS})
 # List the subdirectories to build...
 #============================================================================
 ADD_SUBDIRECTORY(lib_behaviors)
-#ADD_SUBDIRECTORY(pGenFreq)
+ADD_SUBDIRECTORY(pHydrophoneSensor)
 
 ##############################################################################
 #                           END of CMakeLists.txt
