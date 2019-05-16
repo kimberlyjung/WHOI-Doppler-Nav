@@ -25,26 +25,30 @@ set MODE = LOITERING {
   LOITER = true
 } 
 
+//----------------------------------------------
+Behavior = BHV_ZigFollow
+ {
+   name         = zig_actuate            
+   condition    = MODE==LOITERING
+   pwt          = 200
+   zig_offset   = 15
+   desired_speed = 3
+   sample_size  = 6
+   acceptable_angle_difference = 5
+ }
 
 //----------------------------------------------
-Behavior = BHV_Loiter
-{
-  name      = loiter
-  pwt       = 100
-  condition = MODE==LOITERING
-
-   post_suffix = A
-         speed = 1.3
-     clockwise = false
-        radius = 8.0
-     nm_radius = 15.0
-       polygon = radial::$(LOITER_POS), radius=20, pts=8, snap=1, label=$(VNAME)_LOITER
-
-  visual_hints = nextpt_color=white, nextpt_lcolor=khaki
-  visual_hints = edge_color=orange, vertex_color=white
-  visual_hints = edge_size=1, vertex_size=2
-}
-
+//Behavior = BHV_ConstantKimHeading
+ //{
+ //  name         = head_forward            
+ //  condition    = MODE==LOITERING
+ //  pwt          = 100
+ //  heading      = 90
+ //  peakwidth    = 10
+ //  basewidth    = 170
+ //  summitdelta  = 25
+ //  perpetual    = true
+ //}
 
 //----------------------------------------------
 Behavior = BHV_Waypoint

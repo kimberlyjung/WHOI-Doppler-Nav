@@ -18,11 +18,34 @@ Processconfig = ANTLER
   Run = pShare          @ NewConsole = false
   Run = pHostInfo       @ NewConsole = false
   Run = uFldShoreBroker @ NewConsole = false
+  Run = uXMS            @ NewConsole = true
+  Run = pHydrophoneSensor     @ NewConsole = false
 }
 
 #include plug_pShare.moos
 #include plug_pHostInfo.moos
 #include plug_pLogger.moos
+
+//--------------------------------------------------
+// uXMS Configuration Block
+
+ProcessConfig = uXMS
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  var = FREQUENCY_REQUEST
+  var = GILDA_NODE_RECORD, HENRY_NODE_RECORD
+}
+
+//--------------------------------------------------
+// pHydrophone Configuration Block
+
+ProcessConfig = pHydrophoneSensor
+{
+  AppTick       = 1
+  CommsTick     = 1
+}
 
 //--------------------------------------------------
 // uFldShoreBroker Configuration Block
@@ -35,6 +58,9 @@ ProcessConfig = uFldShoreBroker
   QBRIDGE  = DEPLOY, NODE_REPORT
   QBRIDGE  = STATION_KEEP, APPCAST_REQ
   QBRIDGE  = MOOS_MANUAL_OVERRIDE
+  //QBRIDGE =  FREQUENCY_ANSWER
+
+  bridge = src=FREQUENCY_ANSWER_$V, alias=FREQUENCY_ANSWER
 
   BRIDGE   = src=RETURN_ALL, alias=RETURN
   BRIDGE   = src=RETURN_$V,  alias=RETURN

@@ -8,6 +8,7 @@ ProcessConfig = pHelmIvP
 
   ok_skew      = any
   
+  ivp_behavior_dir = /home/kim/WHOI-Doppler-Nav/lib   
   Behaviors    = targ_$(VNAME).bhv  
   Verbose      = false
   Domain       = course:0:359:360

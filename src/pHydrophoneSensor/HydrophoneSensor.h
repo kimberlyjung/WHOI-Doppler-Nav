@@ -45,8 +45,8 @@ class HydrophoneSensor : public AppCastingMOOSApp
    bool    handleNodeReport(const std::string&);
    bool    handleFrequencyRequest(const std::string&);
    double  getTrueNodeNodeRange(const std::string&, const std::string&);
-   double  getTrueNodeNodeFrequency(const std::string&, const std::string&);
-   double  getTrueNodeHeading(const std::string&);
+   double  getTrueNodeNodeFrequency(std::string, std::string);
+   double  getTrueNodeNodeHeading(std::string, std::string);
    double  getTrueNodeNodeBearing(const std::string&, const std::string&);
    bool    allowableEchoType(std::string);
 
@@ -77,7 +77,7 @@ class HydrophoneSensor : public AppCastingMOOSApp
 
   int m_set_frequency; // set leader's emitting frequency
   int m_sensor_frequency; //frequency at which sensor reads a signal
-  const unsigned int m_c = 340; //speed of sound
+  const unsigned int m_c = 1500; //speed of sound in water
 
  private: // State variables
   std::string m_leader;

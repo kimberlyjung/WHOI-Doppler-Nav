@@ -1,4 +1,4 @@
-ServerHost = localhost
+erverHost = localhost
 ServerPort = $(VPORT)
 
 // Community name IS the vehicle name
@@ -21,13 +21,14 @@ Processconfig = ANTLER
   Run = pShare             @ NewConsole = false
   Run = pHostInfo          @ NewConsole = false
   Run = uFldNodeBroker     @ NewConsole = false
-  #ifdef VNAME henry
-  //do stuff
-  #endif
+  Run = uXMS               @ NewConsole = true
+  //#ifdef VNAME henry
+  //Run = pHelmIvP           @ NewConsole = false ~pHelmIvP_henry
+  //#endif
 
-  #ifdef VNAME gilda
-  // do stuff
-  #endif
+  //#ifdef VNAME gilda
+  //Run = pHelmIvP           @ NewConsole = false ~pHelmIvP_gilda
+  //#endif
 }
  
 #include plug_uSimMarine.moos
@@ -39,3 +40,25 @@ Processconfig = ANTLER
 #include plug_pShare.moos
 #include plug_pHostInfo.moos
 #include plug_uFldNodeBroker.moos
+
+//--------------------------------------------------
+// uXMS Configuration Block
+
+ProcessConfig = uXMS
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  var = NAV_HEADING
+  //var = POLY_ENTRY_MADE
+  //var = M_END_TIME
+
+  var = FREQUENCY_ANSWER
+  //var = FREQUENCY_ANSWER_GILDA
+  //var = FREQUENCY_ANSWER_HENRY
+  var = FREQUENCY_REQUEST
+  var = NAV_HEADING_NEW
+  var = m_toward_angle_1, m_away_angle_1
+  var = m_toward_angle_2, m_away_angle_2
+  var = Calculated_heading_1, Calculated_heading_2
+}

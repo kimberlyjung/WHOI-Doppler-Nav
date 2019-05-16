@@ -1,8 +1,0 @@
-//-----------------------------------------------------
-// pGenPath Configuration Block
-
-ProcessConfig = pGenPath
-{
-  AppTick    = 10
-  CommsTick  = 10
-}

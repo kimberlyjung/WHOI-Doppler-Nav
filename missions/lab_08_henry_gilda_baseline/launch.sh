@@ -34,12 +34,12 @@ SHORE_LISTEN="9300"
 
 nsplug meta_vehicle.moos targ_$VNAME1.moos -f WARP=$TIME_WARP \
     VNAME=$VNAME1      START_POS=$START_POS1                  \
-    VPORT="9001"       SHARE_LISTEN="9301"                    \
+    VPORT="9001"       SHARE_LISTEN="9301" //9301                   \
     VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN           
 
 nsplug meta_vehicle.moos targ_$VNAME2.moos -f WARP=$TIME_WARP \
     VNAME=$VNAME2      START_POS=$START_POS2                  \
-    VPORT="9002"       SHARE_LISTEN="9302"                    \
+    VPORT="9002"       SHARE_LISTEN="9302" //9302                    \
     VTYPE="kayak"      SHORE_LISTEN=$SHORE_LISTEN            
 
 nsplug meta_vehicle_leader.bhv targ_$VNAME1.bhv -f VNAME=$VNAME1     \
