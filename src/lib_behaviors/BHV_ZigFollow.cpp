@@ -46,10 +46,9 @@ BHV_ZigFollow::BHV_ZigFollow(IvPDomain domain) :
   m_post_time_1 = 5;
   m_post_time_2 = 5;
   m_freq_counter = 0;
-  m_sample_size = 2;
+  m_sample_size = 1;
   m_bool_right = true;
   m_aad = 2;
-  m_desired_speed = 3;
 
   // Add any variables this behavior needs to subscribe for
   addInfoVars("NAV_HEADING", "no_warning");
@@ -84,7 +83,7 @@ bool BHV_ZigFollow::setParam(string param, string val)
   	return(true);
   }
   else if ((param == "desired_speed") && isNumber(val)) {
-    m_desired_speed = double_val;
+    m_v_f = double_val;
     return(true);
   }
   // If not handled above, then just return false;
@@ -170,6 +169,7 @@ IvPFunction* BHV_ZigFollow::onRunState()
   
   if(m_vec_freqs.size()>m_sample_size) {
   	m_freq1 = averageFrequency();
+    postMessage("AVERAGE_FREQUENCY", m_freq1);
     m_vec_freqs.clear();
 	  if(m_curr_time >= m_post_time_1) { //time to take 1st doppler measurement
       m_first_heading = getBufferDoubleVal("NAV_HEADING", ok);
@@ -177,11 +177,12 @@ IvPFunction* BHV_ZigFollow::onRunState()
 	  	m_post_time_2 = m_curr_time + 5; //time for 2nd doppler measurement
         //doppler_shift = m_freq0 - m_freq1;
 		  m_toward_angle_1 = calcTowardAngle(m_c, m_freq0, m_freq1, m_v_l, m_v_f);
-      m_toward_angle_1 = m_toward_angle_1 *180/3.14159;
+      m_toward_angle_1 = m_toward_angle_1*180/3.14159;
 		  m_away_angle_1 = calcAwayAngle(m_c, m_freq0, m_freq1, m_v_l, m_v_f);
-      m_away_angle_1 = m_away_angle_1 * 180/3.14159;
+      m_away_angle_1 = m_away_angle_1*180/3.14159;
 		  postMessage("m_toward_angle_1", m_toward_angle_1);
       postMessage("m_away_angle_1", m_away_angle_1);
+      postMessage("TEST_VAR", 1);
       if((m_toward_angle_1 <= m_aad) || (m_away_angle_1 <= m_aad)) {
         return buildIvPFxnZAIC(0);
       }
@@ -189,6 +190,7 @@ IvPFunction* BHV_ZigFollow::onRunState()
 	  else if(m_curr_time <= m_post_time_2) { // Actuate temp heading to take 2nd Doppler measurement 
 	  	if(m_bool_right) ipf = buildIvPFxnZAIC(m_zig_offset); //actuate right: CW
 	  	else ipf = buildIvPFxnZAIC(-m_zig_offset); // actuate left: CCW
+      postMessage("TEST_VAR", 2);
 	  }
 	  else if(m_curr_time > m_post_time_2) {//time to take second doppler measurement and calc new heading
 	  	m_toward_angle_2 = calcTowardAngle(m_c, m_freq0, m_freq1, m_v_l, m_v_f);
@@ -197,15 +199,20 @@ IvPFunction* BHV_ZigFollow::onRunState()
       m_away_angle_2 = m_away_angle_2 * 180/3.14159;
       postMessage("m_toward_angle_2", m_toward_angle_2);
       postMessage("m_away_angle_2", m_away_angle_2);
+      postMessage("TEST_VAR", 3);
 	  	
 	  	//calc new heading from logic
 	  	//--if actuation was right-CW  --if actuation was left-CCW
-	  	if((m_freq0 - m_freq1) > 0) {// positive dopppler shift: leader is moving away from follower 
+	  	if(m_freq0 > m_freq1) {// positive dopppler shift: leader is moving away from follower 
 	  		if(m_bool_right) { 
-	  			if(m_away_angle_1 > m_away_angle_2) m_first_heading = m_first_heading - m_away_angle_1;
+	  			if(m_away_angle_1 > m_away_angle_2) {
+            m_first_heading = m_first_heading - m_away_angle_1;
+            postMessage("TEST_VAR", 4);
+          }
 	  			else {
 	  				m_first_heading = m_first_heading + m_away_angle_1;
 	  				m_bool_right = false;
+            postMessage("TEST_VAR", 5);
 	  			}
 	  		}
 	  		else
@@ -214,29 +221,43 @@ IvPFunction* BHV_ZigFollow::onRunState()
 	  				m_first_heading = m_first_heading - m_away_angle_1;
 	  				m_bool_right = true;
             postMessage("Calculated_heading_1", m_first_heading);
+            postMessage("TEST_VAR", 6);
 	  			}
-	  			else m_first_heading = m_first_heading + m_away_angle_1;
+	  			else {
+            m_first_heading = m_first_heading + m_away_angle_1;
+            postMessage("TEST_VAR", 7);
+          }
 	  		}
 	  	}
 	  	else { // negative doppler shift: leader is moving towards follower
 	  		if(m_bool_right) {
-	  			if(m_toward_angle_1 > m_toward_angle_2) m_first_heading = m_first_heading + 180 - m_toward_angle_1;
+	  			if(m_toward_angle_1 > m_toward_angle_2) {
+            m_first_heading = m_first_heading + 180 - m_toward_angle_1;
+            postMessage("TEST_VAR", 8);
+          }
 	  			else {
 	  				m_first_heading = m_first_heading + 180 + m_toward_angle_1;
 	  				m_bool_right = false;
             postMessage("Calculated_heading_2", m_first_heading);
+            postMessage("TEST_VAR", 9);
 	  			}
 	  		}
 	  		else {
 	  			if(m_toward_angle_1 < m_toward_angle_2) {
 	  				m_first_heading = m_first_heading + 180 - m_toward_angle_1;
 	  				m_bool_right = true;
+            postMessage("TEST_VAR", 10);
 	  			}
-	  			else m_first_heading = m_first_heading + 180 + m_toward_angle_1;
+	  			else {
+            m_first_heading = m_first_heading + 180 + m_toward_angle_1;
+            postMessage("TEST_VAR", 11);
+          }
 	  		}
 	  		
 	  	}
 	  }
+    if(m_first_heading>=360) m_first_heading-=360;
+    if(m_first_heading<0) m_first_heading+=360;
     postMessage("NAV_HEADING_NEW", m_first_heading);
 	}
 
@@ -259,7 +280,7 @@ IvPFunction* BHV_ZigFollow::onRunState()
   // m_priority_wt, depending on the behavior author's insite.
   if(ipf)
     ipf->setPWT(m_priority_wt);
-
+  else ipf = buildIvPFxnZAIC(0);
   return(ipf);
 }
 
@@ -268,7 +289,7 @@ IvPFunction *BHV_ZigFollow::buildIvPFxnZAIC(double f_offset)
   IvPFunction *ipf = 0;
 
   ZAIC_PEAK spd_zaic(m_domain, "speed");
-  spd_zaic.setSummit(m_desired_speed);
+  spd_zaic.setSummit(m_v_f);
   spd_zaic.setBaseWidth(0.3);
   spd_zaic.setPeakWidth(0.0);
   spd_zaic.setSummitDelta(0.0);

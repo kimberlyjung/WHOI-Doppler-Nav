@@ -54,10 +54,12 @@ ProcessConfig = uXMS
   //var = M_END_TIME
 
   var = FREQUENCY_ANSWER
+  var = AVERAGE_FREQUENCY
   //var = FREQUENCY_ANSWER_GILDA
   //var = FREQUENCY_ANSWER_HENRY
   var = FREQUENCY_REQUEST
   var = NAV_HEADING_NEW
+  var = TEST_VAR
   var = m_toward_angle_1, m_away_angle_1
   var = m_toward_angle_2, m_away_angle_2
   var = Calculated_heading_1, Calculated_heading_2

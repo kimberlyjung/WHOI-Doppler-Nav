@@ -16,6 +16,9 @@ HydrophoneSensor::HydrophoneSensor()
 {
   m_set_frequency = 25000;
   m_sensor_frequency = 1;  // 1 Hz 
+  m_range_prev = 0;
+  m_range_now = 0;
+  m_first_reading=true;
 }
 
 //---------------------------------------------------------
@@ -227,7 +230,7 @@ bool HydrophoneSensor::handleFrequencyRequest(const string& request)
 //------------------------------------------------------------
 // Procedure: getTrueNodeNodeFrequency()
 
-double HydrophoneSensor::getTrueNodeNodeFrequency(std::string node_a, std::string node_b)
+double HydrophoneSensor::getTrueNodeNodeFrequency(const string& node_a, const string& node_b)
 {
   if((m_map_node_records.count(node_a) == 0) ||
      (m_map_node_records.count(node_b) == 0))
@@ -242,19 +245,25 @@ double HydrophoneSensor::getTrueNodeNodeFrequency(std::string node_a, std::strin
   double anode_heading = m_map_node_records[node_a].getHeading();
   double bnode_heading = m_map_node_records[node_b].getHeading();
 
-  double bearing = getTrueNodeNodeBearing(node_a, node_b); //
-  double heading = getTrueNodeNodeHeading(node_a, node_b); // 
-  double diff = abs(heading+180-bearing);
-  double frequency;
+  double bearing = getTrueNodeNodeBearing(node_a, node_b); // relative bearing
+  double heading = getTrueNodeNodeHeading(node_a, node_b); // relative heading 
+  Notify("REL_BEARING", bearing);
+  Notify("REL_HEADING", heading);
 
-  if((0<=diff) && (diff<=90)) { 
-  //if (rel heading+180) is in same quadrant as bearing, then towards
+  if(m_first_reading) {
+    m_first_reading =false;
+    m_range_prev = getTrueNodeNodeRange(node_a, node_b);
+    return m_set_frequency;
+  }
+  m_range_now = getTrueNodeNodeRange(node_a, node_b);
+  if(m_range_now < m_range_prev) { //towards 
+    m_range_prev = m_range_now;
     return(m_set_frequency*(m_c+anode_speed)/(m_c-(bnode_speed*cos(heading))));
   }
   else { //away
-    return(m_set_frequency*(m_c-anode_speed)/(m_c+(bnode_speed*cos(bearing))));
+    m_range_prev = m_range_now;
+    return(m_set_frequency*(m_c-anode_speed)/(m_c+(bnode_speed*cos(heading))));
   }
-  return(frequency);
 }
 
 double HydrophoneSensor::getTrueNodeNodeRange(const string& node_a,
@@ -268,8 +277,8 @@ double HydrophoneSensor::getTrueNodeNodeRange(const string& node_a,
   double anode_y       = m_map_node_records[node_a].getY();
   double bnode_x       = m_map_node_records[node_b].getX();
   double bnode_y       = m_map_node_records[node_b].getY();
-  double range = hypot((anode_x-bnode_x), (anode_y-bnode_y));
-  
+  double range = abs(hypot((anode_x-bnode_x), (anode_y-bnode_y)));
+  Notify("RANGE", range);
   return(range);
 }
 
@@ -286,9 +295,9 @@ double HydrophoneSensor::getTrueNodeNodeHeading(const string& node_a,
   double heading2 = m_map_node_records[node_b].getHeading();
   double finalheading = heading2-heading1;
   if(finalheading<0) finalheading+=360;
-  if(finalheading>360) finalheading-=360;
+  if(finalheading>=360) finalheading-=360;
 
-  return(heading2-heading1);
+  return(finalheading);
 }
 
 //------------------------------------------------------------

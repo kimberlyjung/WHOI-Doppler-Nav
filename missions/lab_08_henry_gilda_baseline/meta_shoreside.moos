@@ -35,7 +35,8 @@ ProcessConfig = uXMS
   CommsTick     = 1
 
   var = FREQUENCY_REQUEST
-  var = GILDA_NODE_RECORD, HENRY_NODE_RECORD
+  //var = GILDA_NODE_RECORD, HENRY_NODE_RECORD
+  var = REL_HEADING, REL_BEARING, REL_DIFF
 }
 
 //--------------------------------------------------

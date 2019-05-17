@@ -32,8 +32,8 @@ Behavior = BHV_ZigFollow
    condition    = MODE==LOITERING
    pwt          = 200
    zig_offset   = 15
-   desired_speed = 3
-   sample_size  = 6
+   desired_speed = 1
+   sample_size  = 2
    acceptable_angle_difference = 5
  }
 
