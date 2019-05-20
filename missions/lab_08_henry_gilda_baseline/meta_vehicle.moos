@@ -52,7 +52,7 @@ ProcessConfig = uXMS
   var = NAV_HEADING
   //var = POLY_ENTRY_MADE
   //var = M_END_TIME
-
+  var = T_OR_A
   var = FREQUENCY_ANSWER
   var = AVERAGE_FREQUENCY
   //var = FREQUENCY_ANSWER_GILDA

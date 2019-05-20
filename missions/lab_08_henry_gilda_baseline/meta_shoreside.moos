@@ -36,7 +36,8 @@ ProcessConfig = uXMS
 
   var = FREQUENCY_REQUEST
   //var = GILDA_NODE_RECORD, HENRY_NODE_RECORD
-  var = REL_HEADING, REL_BEARING, REL_DIFF
+  //var = REL_HEADING, REL_BEARING
+  var = T_OR_A
 }
 
 //--------------------------------------------------

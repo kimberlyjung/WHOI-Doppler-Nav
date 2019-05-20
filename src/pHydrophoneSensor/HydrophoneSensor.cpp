@@ -250,6 +250,8 @@ double HydrophoneSensor::getTrueNodeNodeFrequency(const string& node_a, const st
   Notify("REL_BEARING", bearing);
   Notify("REL_HEADING", heading);
 
+  heading=heading*3.14159/180; //convert degrees to radians
+
   if(m_first_reading) {
     m_first_reading =false;
     m_range_prev = getTrueNodeNodeRange(node_a, node_b);
@@ -258,11 +260,17 @@ double HydrophoneSensor::getTrueNodeNodeFrequency(const string& node_a, const st
   m_range_now = getTrueNodeNodeRange(node_a, node_b);
   if(m_range_now < m_range_prev) { //towards 
     m_range_prev = m_range_now;
-    return(m_set_frequency*(m_c+anode_speed)/(m_c-(bnode_speed*cos(heading))));
+    //Notify("T_OR_A", "towards");
+    double freq_ans =m_set_frequency*(m_c+anode_speed)/(m_c-(bnode_speed*cos(heading)));
+    Notify("FREQ_ANS_TOWARDS", freq_ans);
+    return(freq_ans);
   }
   else { //away
     m_range_prev = m_range_now;
-    return(m_set_frequency*(m_c-anode_speed)/(m_c+(bnode_speed*cos(heading))));
+    //Notify("T_OR_A", "away");
+    double freq_ans = m_set_frequency*(m_c-anode_speed)/(m_c+(bnode_speed*cos(heading)));
+    Notify("FREQ_ANS_AWAY", freq_ans);
+    return(freq_ans);
   }
 }
 

@@ -46,7 +46,7 @@ BHV_ZigFollow::BHV_ZigFollow(IvPDomain domain) :
   m_post_time_1 = 5;
   m_post_time_2 = 5;
   m_freq_counter = 0;
-  m_sample_size = 1;
+  m_sample_size = 3;
   m_bool_right = true;
   m_aad = 2;
 
@@ -167,14 +167,15 @@ IvPFunction* BHV_ZigFollow::onRunState()
   if(!ok) postEMessage("FREQUENCY not measured");
   if(ok) m_vec_freqs.push_back(myFrequency);
   
+  
   if(m_vec_freqs.size()>m_sample_size) {
   	m_freq1 = averageFrequency();
     postMessage("AVERAGE_FREQUENCY", m_freq1);
     m_vec_freqs.clear();
 	  if(m_curr_time >= m_post_time_1) { //time to take 1st doppler measurement
       m_first_heading = getBufferDoubleVal("NAV_HEADING", ok);
-	  	m_post_time_1 = m_curr_time + 10; //next time to take 1st doppler measurement is 10 seconds later
-	  	m_post_time_2 = m_curr_time + 5; //time for 2nd doppler measurement
+	  	m_post_time_1 = m_curr_time + 20; //next time to take 1st doppler measurement is 10 seconds later
+	  	m_post_time_2 = m_curr_time + 10; //time for 2nd doppler measurement
         //doppler_shift = m_freq0 - m_freq1;
 		  m_toward_angle_1 = calcTowardAngle(m_c, m_freq0, m_freq1, m_v_l, m_v_f);
       m_toward_angle_1 = m_toward_angle_1*180/3.14159;
@@ -261,26 +262,12 @@ IvPFunction* BHV_ZigFollow::onRunState()
     postMessage("NAV_HEADING_NEW", m_first_heading);
 	}
 
-  /*m_end_time = m_post_time + m_zig_time;
-  m_bool_new_heading = false;
-
-  if(m_post_time <= m_curr_time) {
-	m_first_heading = getBufferDoubleVal("NAV_HEADING", ok);
-	m_bool_new_heading=true;
-    }
-
-  if(m_end_time <= m_curr_time) m_bool_new_heading=false;
-  if((m_curr_time >= m_post_time) && (m_curr_time <= m_end_time)) {
-  	ipf = buildIvPFxnZAIC();
-  }
-  */
-  
   // Part N: Prior to returning the IvP function, apply the priority wt
   // Actual weight applied may be some value different than the configured
   // m_priority_wt, depending on the behavior author's insite.
   if(ipf)
     ipf->setPWT(m_priority_wt);
-  else ipf = buildIvPFxnZAIC(0);
+  //else ipf = buildIvPFxnZAIC(0);
   return(ipf);
 }
 

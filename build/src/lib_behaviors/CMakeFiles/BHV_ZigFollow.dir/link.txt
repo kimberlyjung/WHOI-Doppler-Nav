@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC  -fPIC -g  -shared -Wl,-soname,libBHV_ZigFollow.so -o ../../../lib/libBHV_ZigFollow.so CMakeFiles/BHV_ZigFollow.dir/BHV_ZigFollow.cpp.o  -L/home/kim/moos-ivp/lib -lgeometry -lhelmivp -lbehaviors -livpbuild -llogic -livpcore -lbhvutil -lmbutil -lm -Wl,-rpath,/home/kim/moos-ivp/lib 
